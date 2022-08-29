@@ -1,105 +1,150 @@
-body{
-    font-family: 'Roboto', sans-serif;
+body {
+  font-family: "Roboto", sans-serif;
 }
 
 div.page-container {
-    width: 40%;
-    display: flex;
-    flex-direction: column;
+  width: 45%;
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
 }
 .title {
-    align-self: center;
+  align-self: center;
 }
 
 .subtitle {
-    align-self: center;
-    font-weight: 100;
+  align-self: center;
+  font-weight: 100;
+  font-style: italic;
 }
 
-.navbar {
-    display: flex;
-    align-self: center;
-    justify-content: space-between;
-    margin-bottom: 10px;
+.navbar-header {
+  display: flex;
+  align-self: center;
+  justify-content: space-around;
+  margin-bottom: 10px;
 }
 
 div.container_text {
-    display: flex;
-    justify-content: center;
-    align-self: center;
-    align-items: center;
-}
-
-.img-responsive-chefs {
-    width: 400px;
+  display: flex;
+  justify-content: center;
+  align-self: center;
+  align-items: center;
+  text-align: justify;
+  text-justify: inter-word;
 }
 
 div.container_kitchen {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
-.est-kitchen, .asian-kitchen, .it-kitchen {
-    object-fit: cover;
-    position: relative; 
-    width: 200px;
-    height: 200px; 
-    overflow: hidden;
-    border-radius: 50%;
+.img-responsive-chefs {
+  max-width: 400px;
+  margin-left: 20px;
+}
+
+@media (max-width: 1500px) {
+  div.container_text {
+    flex-direction: column;
+  }
+  div.container_kitchen {
+    flex-direction: column;
+    align-self:center;
+  }
+
+}
+
+@media (max-width: 1100px) {
+    div.page-container {
+        width: 100%;
+      }
+}
+
+.est-kitchen,
+.asian-kitchen,
+.it-kitchen {
+  object-fit: cover;
+  position: relative;
+  max-width: 200px;
+  height: 200px;
+  overflow: hidden;
+  border-radius: 50%;
 }
 
 .overlay {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 100%;
-    width: 100%;
-    opacity: 0;
-    transition: .5s ease;
-  }
-  
-  .container_img_kitchen:hover .overlay {
-    opacity: 1;
-  }
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  width: 100%;
+  opacity: 0;
+  transition: 0.5s ease;
+}
 
-  .container_img_kitchen {
-    position: relative;
-  }
+.container_img_kitchen:hover .overlay {
+  opacity: 1;
+}
 
-  .text {
-    color: white;
-    font-size: 50px;
-    position: absolute;
-    -webkit-text-stroke: 1px black;
-    top: 50%;
-    left: 50%;
-    -webkit-transform: translate(-50%, -50%);
-    -ms-transform: translate(-50%, -50%);
-    transform: translate(-50%, -50%);
-    text-align: center;
-  }
+.container_img_kitchen {
+  position: relative;
+}
+
+.text {
+  color: white;
+  font-size: 50px;
+  position: absolute;
+  -webkit-text-stroke: 1px black;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
 
 .footer_container {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-self: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-self: center;
+  background-color: lightgrey;
 }
 
 .socials {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
+  margin-right: 20px;
 }
 
 .socials-icons {
-    width: 25px;
-    margin-top: 5px;
+  width: 25px;
+  margin-top: 5px;
 }
 
 .contacts {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
+  margin-left: 20px;
+}
+
+.navbar-address {
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  background-color: #008cba;
+  width: 30%;
+}
+
+.img-banner {
+  max-width: 100%;
 }
