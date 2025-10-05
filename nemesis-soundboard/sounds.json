@@ -1,0 +1,10 @@
+{
+  "sounds": [
+    "sounds/Nemesis/Arrives.mp3",
+    "sounds/Nemesis/Hits.mp3",
+    "sounds/Nemesis/Not Interested.mp3",
+    "sounds/Event/Fire Alarm.mp3",
+    "sounds/Event/Room Breaking.mp3",
+    "sounds/Event/Launch Pods.mp3"
+  ]
+}
