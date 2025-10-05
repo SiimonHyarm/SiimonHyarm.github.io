@@ -43,7 +43,15 @@ function createCategorySection(category, files, index) {
       <img src="${SOUND_ICON}" alt="${prettyName}" class="sound-img">
       <span class="sound-label">${prettyName}</span>
     `;
-    btn.onclick = () => new Audio(`sounds/${category}/${file}`).play();
+    btn.onclick = () => {
+      btn.disabled = true; // temporarily disable the button
+      const audio = new Audio(`sounds/${category}/${file}`);
+      audio.play();
+      audio.addEventListener("ended", () => {
+        btn.disabled = false; // re-enable when done
+      });
+};
+
     grid.appendChild(btn);
   });
 
