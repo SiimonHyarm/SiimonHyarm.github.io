@@ -1,3 +1,4 @@
+// v0.13
 const SOUND_ICON = "https://thumbs.dreamstime.com/b/red-button-sign-stock-vector-130152563.jpg";
 
 async function loadSounds() {
