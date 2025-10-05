@@ -18,17 +18,17 @@ function createCategorySection(category, files, index) {
   header.className = "category-header";
   header.setAttribute("data-bs-toggle", "collapse");
   header.setAttribute("data-bs-target", `#${collapseId}`);
-  header.setAttribute("aria-expanded", "false");
+  header.setAttribute("aria-expanded", "true");
   header.setAttribute("aria-controls", collapseId);
 
   header.innerHTML = `
     <span class="category-title">${capitalize(category)}</span>
-    <span class="toggle-icon">▼</span>
+    <span class="toggle-icon">▲</span>
   `;
 
   // Sound grid (Bootstrap collapse container)
   const gridWrapper = document.createElement("div");
-  gridWrapper.className = "collapse";
+  gridWrapper.className = "collapse show"; // 👈 show by default
   gridWrapper.id = collapseId;
 
   const grid = document.createElement("div");
@@ -52,7 +52,7 @@ function createCategorySection(category, files, index) {
   section.appendChild(header);
   section.appendChild(gridWrapper);
 
-  // Rotate arrow icon when expanded
+  // Rotate arrow icon when expanded/collapsed
   gridWrapper.addEventListener("show.bs.collapse", () => {
     header.querySelector(".toggle-icon").textContent = "▲";
   });
