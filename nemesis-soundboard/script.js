@@ -1,30 +1,31 @@
+const SOUND_ICON = "https://thumbs.dreamstime.com/b/red-button-sign-stock-vector-130152563.jpg";
+
 async function loadSounds() {
-  const response = await fetch("sounds.json");
-  const data = await response.json();
+  const res = await fetch("sounds.json");
+  const data = await res.json();
   return data.sounds;
 }
 
 function extractInfo(filePath) {
   const parts = filePath.split("/");
-  const category = parts[1]; // after "sounds/"
-  const fileName = parts.pop().replace(/\.[^/.]+$/, ""); // remove extension
-  const name = fileName
-    .replace(/[_-]/g, " ") // replace underscores/dashes
-    .replace(/\b\w/g, c => c.toUpperCase()); // capitalize words
+  const category = parts[1];
+  const fileName = parts.pop().replace(/\.[^/.]+$/, "");
+  const name = fileName.replace(/[_-]/g, " ").replace(/\b\w/g, c => c.toUpperCase());
   return { name, category, file: filePath };
 }
 
 function renderCategories(categories) {
-  const container = document.querySelector(".flex.justify-center");
-  container.innerHTML = ""; // clear existing
+  const container = document.getElementById("category-buttons");
+  container.innerHTML = "";
   categories.forEach(cat => {
     const btn = document.createElement("button");
-    btn.textContent = cat.charAt(0).toUpperCase() + cat.slice(1);
-    btn.className = "category-btn";
+    btn.className = "btn btn-outline-light";
+    btn.textContent = cat === "all" ? "All" : cat.charAt(0).toUpperCase() + cat.slice(1);
     btn.dataset.category = cat;
-    btn.addEventListener("click", () => filterSounds(cat));
+    btn.onclick = () => filterSounds(cat);
     container.appendChild(btn);
   });
+  container.querySelector('[data-category="all"]').classList.add("active");
 }
 
 function renderSounds(sounds) {
@@ -32,8 +33,12 @@ function renderSounds(sounds) {
   board.innerHTML = "";
   sounds.forEach(({ name, file }) => {
     const btn = document.createElement("button");
-    btn.className = "sound-btn";
-    btn.textContent = name;
+    btn.className = "sound-btn text-center";
+
+    btn.innerHTML = `
+      <img src="${SOUND_ICON}" alt="${name}" class="sound-img">
+      <span class="sound-label">${name}</span>
+    `;
     btn.onclick = () => new Audio(file).play();
     board.appendChild(btn);
   });
@@ -42,8 +47,8 @@ function renderSounds(sounds) {
 let allSounds = [];
 
 function filterSounds(category) {
-  document.querySelectorAll(".category-btn").forEach(btn =>
-    btn.classList.toggle("active", btn.dataset.category === category)
+  document.querySelectorAll("#category-buttons .btn").forEach(b =>
+    b.classList.toggle("active", b.dataset.category === category)
   );
   if (category === "all") renderSounds(allSounds);
   else renderSounds(allSounds.filter(s => s.category === category));
