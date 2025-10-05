@@ -15,22 +15,33 @@ function extractInfo(filePath) {
 }
 
 function renderCategories(categories) {
-  const container = document.getElementById("category-buttons");
-  container.innerHTML = "";
+  const menu = document.getElementById("categoryMenu");
+  menu.innerHTML = "";
+
   categories.forEach(cat => {
-    const btn = document.createElement("button");
-    btn.className = "btn btn-outline-light";
-    btn.textContent = cat === "all" ? "All" : cat.charAt(0).toUpperCase() + cat.slice(1);
-    btn.dataset.category = cat;
-    btn.onclick = () => filterSounds(cat);
-    container.appendChild(btn);
+    const li = document.createElement("li");
+    const a = document.createElement("a");
+    a.className = "dropdown-item";
+    a.textContent = cat.charAt(0).toUpperCase() + cat.slice(1);
+    a.href = "#";
+    a.onclick = (e) => {
+      e.preventDefault();
+      document.getElementById("categoryDropdown").textContent = a.textContent;
+      filterSounds(cat);
+    };
+    li.appendChild(a);
+    menu.appendChild(li);
   });
-  container.querySelector('[data-category="all"]').classList.add("active");
 }
 
 function renderSounds(sounds) {
   const board = document.getElementById("soundboard");
   board.innerHTML = "";
+  if (sounds.length === 0) {
+    board.innerHTML = `<p class="text-secondary text-center">No sounds found in this category.</p>`;
+    return;
+  }
+
   sounds.forEach(({ name, file }) => {
     const btn = document.createElement("button");
     btn.className = "sound-btn text-center";
@@ -47,18 +58,14 @@ function renderSounds(sounds) {
 let allSounds = [];
 
 function filterSounds(category) {
-  document.querySelectorAll("#category-buttons .btn").forEach(b =>
-    b.classList.toggle("active", b.dataset.category === category)
-  );
-  if (category === "all") renderSounds(allSounds);
-  else renderSounds(allSounds.filter(s => s.category === category));
+  const filtered = allSounds.filter(s => s.category === category);
+  renderSounds(filtered);
 }
 
 (async function init() {
   const soundFiles = await loadSounds();
   allSounds = soundFiles.map(extractInfo);
 
-  const categories = ["all", ...new Set(allSounds.map(s => s.category))];
+  const categories = [...new Set(allSounds.map(s => s.category))];
   renderCategories(categories);
-  renderSounds(allSounds);
 })();
