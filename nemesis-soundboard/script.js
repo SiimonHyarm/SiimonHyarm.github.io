@@ -1,28 +1,38 @@
-// v0.13
 const SOUND_ICON = "https://thumbs.dreamstime.com/b/red-button-sign-stock-vector-130152563.jpg";
 
 async function loadSounds() {
   const res = await fetch("sounds.json");
   const data = await res.json();
-  return data.categories; // { category: [files] }
+  return data.categories;
 }
 
-function createCategorySection(category, files) {
+function createCategorySection(category, files, index) {
   const section = document.createElement("div");
   section.className = "category-section mb-3";
 
-  // Header
+  // Unique ID for Bootstrap collapse
+  const collapseId = `collapse-${index}`;
+
+  // Category header (acts as collapse trigger)
   const header = document.createElement("div");
   header.className = "category-header";
+  header.setAttribute("data-bs-toggle", "collapse");
+  header.setAttribute("data-bs-target", `#${collapseId}`);
+  header.setAttribute("aria-expanded", "false");
+  header.setAttribute("aria-controls", collapseId);
+
   header.innerHTML = `
     <span class="category-title">${capitalize(category)}</span>
     <span class="toggle-icon">▼</span>
   `;
 
-  // Sound buttons grid
+  // Sound grid (Bootstrap collapse container)
+  const gridWrapper = document.createElement("div");
+  gridWrapper.className = "collapse";
+  gridWrapper.id = collapseId;
+
   const grid = document.createElement("div");
-  grid.className = "sound-grid collapse";
-  grid.id = `collapse-${category}`;
+  grid.className = "sound-grid";
 
   files.forEach(file => {
     const name = file.replace(/\.[^/.]+$/, "").replace(/[_-]/g, " ");
@@ -38,22 +48,18 @@ function createCategorySection(category, files) {
     grid.appendChild(btn);
   });
 
-  // Toggle expand/collapse
-  header.onclick = () => {
-    const isShown = grid.classList.contains("show");
-    document.querySelectorAll(".sound-grid.show").forEach(g => g.classList.remove("show"));
-    document.querySelectorAll(".toggle-icon").forEach(i => (i.textContent = "▼"));
-    if (!isShown) {
-      grid.classList.add("show");
-      header.querySelector(".toggle-icon").textContent = "▲";
-    } else {
-      grid.classList.remove("show");
-      header.querySelector(".toggle-icon").textContent = "▼";
-    }
-  };
-
+  gridWrapper.appendChild(grid);
   section.appendChild(header);
-  section.appendChild(grid);
+  section.appendChild(gridWrapper);
+
+  // Rotate arrow icon when expanded
+  gridWrapper.addEventListener("show.bs.collapse", () => {
+    header.querySelector(".toggle-icon").textContent = "▲";
+  });
+  gridWrapper.addEventListener("hide.bs.collapse", () => {
+    header.querySelector(".toggle-icon").textContent = "▼";
+  });
+
   return section;
 }
 
@@ -70,8 +76,8 @@ function capitalizeWords(str) {
   const board = document.getElementById("soundboard");
   board.innerHTML = "";
 
-  Object.entries(categories).forEach(([cat, files]) => {
-    const section = createCategorySection(cat, files);
+  Object.entries(categories).forEach(([cat, files], index) => {
+    const section = createCategorySection(cat, files, index);
     board.appendChild(section);
   });
 })();
