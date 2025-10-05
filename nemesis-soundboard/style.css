@@ -1,3 +1,32 @@
+.category-header {
+  cursor: pointer;
+  background-color: #222;
+  border-radius: 0.5rem;
+  padding: 1rem 1.25rem;
+  margin-bottom: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background-color 0.2s ease;
+}
+
+.category-header:hover {
+  background-color: #333;
+}
+
+.category-title {
+  font-weight: 600;
+  font-size: 1.25rem;
+}
+
+.sound-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.25rem;
+  padding: 1rem 0;
+}
+
 .sound-btn {
   background: none;
   border: none;
@@ -11,8 +40,8 @@
 }
 
 .sound-img {
-  width: 120px;
-  height: 120px;
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
   object-fit: cover;
   box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);

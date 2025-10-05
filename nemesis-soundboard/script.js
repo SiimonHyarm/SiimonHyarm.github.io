@@ -3,69 +3,74 @@ const SOUND_ICON = "https://thumbs.dreamstime.com/b/red-button-sign-stock-vector
 async function loadSounds() {
   const res = await fetch("sounds.json");
   const data = await res.json();
-  return data.sounds;
+  return data.categories; // { category: [files] }
 }
 
-function extractInfo(filePath) {
-  const parts = filePath.split("/");
-  const category = parts[1];
-  const fileName = parts.pop().replace(/\.[^/.]+$/, "");
-  const name = fileName.replace(/[_-]/g, " ").replace(/\b\w/g, c => c.toUpperCase());
-  return { name, category, file: filePath };
-}
+function createCategorySection(category, files) {
+  const section = document.createElement("div");
+  section.className = "category-section mb-3";
 
-function renderCategories(categories) {
-  const menu = document.getElementById("categoryMenu");
-  menu.innerHTML = "";
+  // Header
+  const header = document.createElement("div");
+  header.className = "category-header";
+  header.innerHTML = `
+    <span class="category-title">${capitalize(category)}</span>
+    <span class="toggle-icon">▼</span>
+  `;
 
-  categories.forEach(cat => {
-    const li = document.createElement("li");
-    const a = document.createElement("a");
-    a.className = "dropdown-item";
-    a.textContent = cat.charAt(0).toUpperCase() + cat.slice(1);
-    a.href = "#";
-    a.onclick = (e) => {
-      e.preventDefault();
-      document.getElementById("categoryDropdown").textContent = a.textContent;
-      filterSounds(cat);
-    };
-    li.appendChild(a);
-    menu.appendChild(li);
-  });
-}
+  // Sound buttons grid
+  const grid = document.createElement("div");
+  grid.className = "sound-grid collapse";
+  grid.id = `collapse-${category}`;
 
-function renderSounds(sounds) {
-  const board = document.getElementById("soundboard");
-  board.innerHTML = "";
-  if (sounds.length === 0) {
-    board.innerHTML = `<p class="text-secondary text-center">No sounds found in this category.</p>`;
-    return;
-  }
+  files.forEach(file => {
+    const name = file.replace(/\.[^/.]+$/, "").replace(/[_-]/g, " ");
+    const prettyName = capitalizeWords(name);
 
-  sounds.forEach(({ name, file }) => {
     const btn = document.createElement("button");
     btn.className = "sound-btn text-center";
-
     btn.innerHTML = `
-      <img src="${SOUND_ICON}" alt="${name}" class="sound-img">
-      <span class="sound-label">${name}</span>
+      <img src="${SOUND_ICON}" alt="${prettyName}" class="sound-img">
+      <span class="sound-label">${prettyName}</span>
     `;
-    btn.onclick = () => new Audio(file).play();
-    board.appendChild(btn);
+    btn.onclick = () => new Audio(`sounds/${category}/${file}`).play();
+    grid.appendChild(btn);
   });
+
+  // Toggle expand/collapse
+  header.onclick = () => {
+    const isShown = grid.classList.contains("show");
+    document.querySelectorAll(".sound-grid.show").forEach(g => g.classList.remove("show"));
+    document.querySelectorAll(".toggle-icon").forEach(i => (i.textContent = "▼"));
+    if (!isShown) {
+      grid.classList.add("show");
+      header.querySelector(".toggle-icon").textContent = "▲";
+    } else {
+      grid.classList.remove("show");
+      header.querySelector(".toggle-icon").textContent = "▼";
+    }
+  };
+
+  section.appendChild(header);
+  section.appendChild(grid);
+  return section;
 }
 
-let allSounds = [];
+function capitalize(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
 
-function filterSounds(category) {
-  const filtered = allSounds.filter(s => s.category === category);
-  renderSounds(filtered);
+function capitalizeWords(str) {
+  return str.replace(/\b\w/g, c => c.toUpperCase());
 }
 
 (async function init() {
-  const soundFiles = await loadSounds();
-  allSounds = soundFiles.map(extractInfo);
+  const categories = await loadSounds();
+  const board = document.getElementById("soundboard");
+  board.innerHTML = "";
 
-  const categories = [...new Set(allSounds.map(s => s.category))];
-  renderCategories(categories);
+  Object.entries(categories).forEach(([cat, files]) => {
+    const section = createCategorySection(cat, files);
+    board.appendChild(section);
+  });
 })();
